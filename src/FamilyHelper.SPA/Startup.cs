@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace FamilyHelper.Web
+namespace FamilyHelper.SPA
 {
     public class Startup
     {

@@ -7,8 +7,8 @@
 
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>7fcdf7ad-0361-417e-9c37-39b2ef90c8e4</ProjectGuid>
-    <RootNamespace>FamilyHelper.Services</RootNamespace>
+    <ProjectGuid>5349aff2-57cc-43cf-a9c4-1811fa00b0bb</ProjectGuid>
+    <RootNamespace>FamilyHelper.Data.Intefaces</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">.\obj</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
