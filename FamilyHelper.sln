@@ -12,7 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{D4B926EC-0505-4844-BB5F-A390F5A6BCF3}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "FamilyHelper.Data.Intefaces", "src\FamilyHelper.Data.Intefaces\FamilyHelper.Data.Intefaces.xproj", "{5349AFF2-57CC-43CF-A9C4-1811FA00B0BB}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "FamilyHelper.Data.Interfaces", "src\FamilyHelper.Data.Intefaces\FamilyHelper.Data.Interfaces.xproj", "{5349AFF2-57CC-43CF-A9C4-1811FA00B0BB}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "FamilyHelper.Data", "src\FamilyHelper.Data\FamilyHelper.Data.xproj", "{6BC1FE72-2078-4640-BE8B-47C5E8F5C9F0}"
 EndProject
