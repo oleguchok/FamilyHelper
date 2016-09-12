@@ -8,6 +8,8 @@ namespace FamilyHelper.Data
         public DbSet<Family> Families { get; set; }
         public DbSet<User> Users { get; set; }
 
+        public FamilyHelperContext(DbContextOptions options) : base(options) { }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Family>()
