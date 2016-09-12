@@ -11,9 +11,17 @@ namespace FamilyHelper.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Family>()
+                .Property(f => f.Id)
+                .HasColumnName("family_id");
+
+            modelBuilder.Entity<Family>()
                 .Property(f => f.FamilyName)
                 .HasMaxLength(150)
                 .IsRequired();
+
+            modelBuilder.Entity<Family>()
+                .HasIndex(f => f.FamilyName)
+                .IsUnique();
 
             modelBuilder.Entity<User>()
                 .Property(u => u.UserName)
