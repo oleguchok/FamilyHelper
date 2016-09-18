@@ -8,6 +8,8 @@ namespace FamilyHelper.Data.Infrastructure
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
         private readonly FamilyHelperContext _dbContext;
+        private IEntityBaseRepository<User> _userRepository;
+        private IEntityBaseRepository<Family> _familyRepository;
         private bool _isDisposed;
 
         public UnitOfWork(FamilyHelperContext dbContext)
@@ -20,8 +22,13 @@ namespace FamilyHelper.Data.Infrastructure
             Dispose(false);
         }
 
-        public IEntityBaseRepository<User> UserRepository => new EntityBaseRepository<User>(_dbContext);
-        public IEntityBaseRepository<Family> FamilyRepository => new EntityBaseRepository<Family>(_dbContext);
+        #region Repositories
+        public IEntityBaseRepository<User> UserRepository => 
+            _userRepository ?? (_userRepository = new EntityBaseRepository<User>(_dbContext));
+
+        public IEntityBaseRepository<Family> FamilyRepository => 
+            _familyRepository ?? (_familyRepository = new EntityBaseRepository<Family>(_dbContext));
+        #endregion
 
         public void Commit()
         {
