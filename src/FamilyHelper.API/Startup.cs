@@ -6,6 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using FamilyHelper.Data;
 using FamilyHelper.Data.Infrastructure;
+using FamilyHelper.Service.Abstract;
+using FamilyHelper.Service.Implementation;
 using Microsoft.Extensions.Configuration;
 
 namespace FamilyHelper.API
@@ -35,6 +37,9 @@ namespace FamilyHelper.API
 
             // DI
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IFamilyService, FamilyService>();
 
             services.AddMvc();
         }

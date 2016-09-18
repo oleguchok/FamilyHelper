@@ -1,4 +1,4 @@
-﻿using FamilyHelper.Data.Infrastructure;
+﻿using FamilyHelper.Service.Abstract;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamilyHelper.API.Controllers
@@ -6,16 +6,16 @@ namespace FamilyHelper.API.Controllers
     [Route("api/[controller]")]
     public class UserController : Controller
     {
-        private IUnitOfWork _unitOfWork;
+        private IUserService _userService;
 
-        public UserController(IUnitOfWork unitOfWork)
+        public UserController(IUserService userService)
         {
-            _unitOfWork = unitOfWork;
+            _userService = userService;
         }
 
         public IActionResult Get()
         {
-            var users = _unitOfWork.UserRepository.GetAll();
+            var users = _userService.GetAll();
 
             return new OkObjectResult(users);
         }
