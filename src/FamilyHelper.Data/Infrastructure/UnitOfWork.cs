@@ -2,16 +2,15 @@
 using FamilyHelper.Data.Abstract;
 using FamilyHelper.Data.Repositories;
 using FamilyHelper.Entities.Entities;
-using Microsoft.EntityFrameworkCore;
 
 namespace FamilyHelper.Data.Infrastructure
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
-        private readonly DbContext _dbContext;
+        private readonly FamilyHelperContext _dbContext;
         private bool _isDisposed;
 
-        public UnitOfWork(DbContext dbContext)
+        public UnitOfWork(FamilyHelperContext dbContext)
         {
             _dbContext = dbContext;
         }
@@ -22,6 +21,7 @@ namespace FamilyHelper.Data.Infrastructure
         }
 
         public IEntityBaseRepository<User> UserRepository => new EntityBaseRepository<User>(_dbContext);
+        public IEntityBaseRepository<Family> FamilyRepository => new EntityBaseRepository<Family>(_dbContext);
 
         public void Commit()
         {

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using FamilyHelper.Data;
+using FamilyHelper.Data.Infrastructure;
 using Microsoft.Extensions.Configuration;
 
 namespace FamilyHelper.API
@@ -31,6 +32,11 @@ namespace FamilyHelper.API
         {
             services.AddDbContext<FamilyHelperContext>(options =>
                 options.UseSqlServer(Configuration["ConnectionStrings:FamilyHelperDatabase"]));
+
+            // DI
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -42,6 +48,13 @@ namespace FamilyHelper.API
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
+            });
 
             app.Run(async (context) =>
             {
