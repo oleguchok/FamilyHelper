@@ -37,8 +37,12 @@ namespace FamilyHelper.API
             services.AddDbContext<FamilyHelperContext>(options =>
                 options.UseSqlServer(Configuration["ConnectionStrings:FamilyHelperDatabase"]));
 
-            services.AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<FamilyHelperContext>();
+            services.AddIdentity<User, IdentityRole<long>>(opt =>
+            {
+                opt.Password.RequireUppercase = false;
+                opt.Password.RequireLowercase = false;
+                opt.Password.RequireNonAlphanumeric = false;
+            }).AddEntityFrameworkStores<FamilyHelperContext, long>();
 
             // DI
             services.AddScoped<IUnitOfWork, UnitOfWork>();
