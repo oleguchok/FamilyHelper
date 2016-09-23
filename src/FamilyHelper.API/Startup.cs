@@ -6,8 +6,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using FamilyHelper.Data;
 using FamilyHelper.Data.Infrastructure;
+using FamilyHelper.Entities.Entities;
 using FamilyHelper.Service.Abstract;
 using FamilyHelper.Service.Implementation;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace FamilyHelper.API
@@ -35,6 +37,9 @@ namespace FamilyHelper.API
             services.AddDbContext<FamilyHelperContext>(options =>
                 options.UseSqlServer(Configuration["ConnectionStrings:FamilyHelperDatabase"]));
 
+            services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<FamilyHelperContext>();
+
             // DI
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -53,6 +58,8 @@ namespace FamilyHelper.API
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseIdentity();
 
             app.UseMvc(routes =>
             {

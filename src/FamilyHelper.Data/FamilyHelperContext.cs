@@ -1,17 +1,19 @@
 ﻿using FamilyHelper.Entities.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace FamilyHelper.Data
 {
-    public class FamilyHelperContext : DbContext
+    public class FamilyHelperContext : IdentityDbContext<User>
     {
         public DbSet<Family> Families { get; set; }
-        public DbSet<User> Users { get; set; }
 
         public FamilyHelperContext(DbContextOptions options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Family>()
                 .Property(f => f.Id)
                 .HasColumnName("family_id");
@@ -41,7 +43,7 @@ namespace FamilyHelper.Data
                 .IsRequired();
 
             modelBuilder.Entity<User>()
-                .Property(u => u.HashedPassword)
+                .Property(u => u.PasswordHash)
                 .HasMaxLength(450)
                 .IsRequired();
 

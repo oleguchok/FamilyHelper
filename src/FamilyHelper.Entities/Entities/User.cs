@@ -1,16 +1,14 @@
 ﻿using System;
 using FamilyHelper.Entities.Abstract;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace FamilyHelper.Entities.Entities
 {
-    public class User : IEntityBase
+    public class User : IdentityUser, IEntityBase
     {
-        public long Id { get; set; }
-        public string UserName { get; set; }
-        public string HashedPassword { get; set; }
+        public new long Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Email { get; set; }
         public DateTime DateOfBirth { get; set; }
 
         public long FamilyId { get; set; }
