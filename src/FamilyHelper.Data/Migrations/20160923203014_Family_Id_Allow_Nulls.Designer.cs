@@ -8,9 +8,10 @@ using FamilyHelper.Data;
 namespace FamilyHelper.Data.Migrations
 {
     [DbContext(typeof(FamilyHelperContext))]
-    partial class FamilyHelperContextModelSnapshot : ModelSnapshot
+    [Migration("20160923203014_Family_Id_Allow_Nulls")]
+    partial class Family_Id_Allow_Nulls
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.0-rtm-21431")
