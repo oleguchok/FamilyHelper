@@ -52,5 +52,31 @@ namespace FamilyHelper.API.Controllers
             }
             return new OkResult();
         }
+
+        [HttpGet("login")]
+        public IActionResult Login(string returnUrl = null)
+        {
+            return new OkResult();
+        }
+
+        [HttpPost("login")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(UserLoginDTO loginDto)
+        {
+            if (ModelState.IsValid)
+            {
+                var result =
+                    await _signInManager.PasswordSignInAsync(loginDto.UserName, loginDto.Password, false, false);
+                if (result.Succeeded)
+                {
+                    return new OkResult();
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Incorrect username or password");
+                }
+            }
+            return new OkResult();
+        }
     }
 }
