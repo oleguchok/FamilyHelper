@@ -11,7 +11,7 @@ namespace FamilyHelper.Entities.Entities
         public string LastName { get; set; }
         public DateTime DateOfBirth { get; set; }
 
-        public long FamilyId { get; set; }
+        public long? FamilyId { get; set; }
         public Family Family { get; set; }
     }
 }
