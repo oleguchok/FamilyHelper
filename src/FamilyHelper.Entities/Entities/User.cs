@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace FamilyHelper.Entities.Entities
 {
-    public class User : IdentityUser, IEntityBase
+    public class User : IdentityUser<long>, IEntityBase
     {
-        public new long Id { get; set; }
+        public override long Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime DateOfBirth { get; set; }

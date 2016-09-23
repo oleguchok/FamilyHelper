@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FamilyHelper.Data
 {
-    public class FamilyHelperContext : IdentityDbContext<User>
+    public class FamilyHelperContext : IdentityDbContext<User, IdentityRole<long>, long>
     {
         public DbSet<Family> Families { get; set; }
 
