@@ -3,7 +3,6 @@
 	"name": "asp.net",
   "private": true,
   "dependencies": {
-    "angular2": "2.0.0-beta.17"
   },
 	"devDependencies": {
 	}
