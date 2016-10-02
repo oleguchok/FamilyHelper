@@ -37,6 +37,7 @@ namespace FamilyHelper.SPA
                 if (context.Response.StatusCode == 404 && !Path.HasExtension(context.Request.Path.Value))
                 {
                     context.Request.Path = "/app/index.html";
+                    context.Response.StatusCode = 200;
                     await next();
                 }
             });
