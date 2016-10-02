@@ -2,13 +2,22 @@
 <html ng-app="familyHelper">
 <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title>Family helper</title>
+    <link rel="stylesheet" href="../lib/bootstrap/dist/css/bootstrap.min.css"/>
 </head>
 <body>
     Hello from SPA!
+    <a href="/login">login</a>
+    <a href="/register">register</a>
+    <a href="/">home</a>
+    <div ng-view></div>
 
     <!-- Library Scripts-->
-    <script src="../lib/angular/angular.min.js"></script>
-    <script src="app.module.js"></script>
+    <script src="/lib/angular/angular.min.js"></script>
+    <script src="/lib/angular-route/angular-route.min.js"></script>
+
+    <!-- App scripts-->
+    <script src="/app/app.module.js"></script>
+    <script src="/app/app.config.js"></script>
 </body>
 </html>
