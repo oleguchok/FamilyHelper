@@ -1,4 +1,4 @@
-﻿<div class="row">
+﻿<div class="row" ng-controller="loginController">
     <form class="col-md-3">
         <h3>Sign in</h3>
         <div class="form-group">
@@ -9,7 +9,7 @@
             <label for="inputPassword">Password</label>
             <input type="password" id="inputPassword" name="inputPassword" placeholder="Password"/>
         </div>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        <button class="btn btn-lg btn-primary btn-block" type="submit" ng-click="login()">Sign in</button>
         <div class="pull-right">
             <a ng-href="/register" class="control-label">Register</a>
         </div>
