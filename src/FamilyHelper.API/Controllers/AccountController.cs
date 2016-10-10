@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using FamilyHelper.API.Models.DTO;
 using FamilyHelper.Entities.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -60,8 +61,8 @@ namespace FamilyHelper.API.Controllers
         }
 
         [HttpPost("login")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(UserLoginDTO loginDto)
+        [AllowAnonymous]
+        public async Task<IActionResult> Login([FromBody]UserLoginDTO loginDto)
         {
             if (ModelState.IsValid)
             {

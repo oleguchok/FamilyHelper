@@ -7,8 +7,20 @@
     loginController.$inject = ["$scope", "apiService"];
     
     function loginController($scope, apiService) {
-        $scope.login = function() {
-            
+        $scope.user = {};
+
+        $scope.login = function () {
+            apiService.post('http://localhost:5000/api/account/login', $scope.user, success, failure);
+        }
+
+        function success(result) {
+            if (result) {
+                alert('!');
+            }
+        }
+
+        function failure(error) {
+            alert('Error!');
         }
     }
 })();

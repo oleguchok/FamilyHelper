@@ -50,6 +50,16 @@ namespace FamilyHelper.API
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IFamilyService, FamilyService>();
 
+            // Setting up CORS
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", builder =>
+                    builder.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials());
+            });
+
             services.AddMvc();
         }
 
@@ -64,6 +74,8 @@ namespace FamilyHelper.API
             }
 
             app.UseIdentity();
+
+            app.UseCors("CorsPolicy");
 
             app.UseMvc(routes =>
             {
