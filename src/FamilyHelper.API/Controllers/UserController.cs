@@ -1,4 +1,5 @@
 ﻿using FamilyHelper.Service.Abstract;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamilyHelper.API.Controllers
@@ -13,6 +14,7 @@ namespace FamilyHelper.API.Controllers
             _userService = userService;
         }
 
+        [Authorize]
         public IActionResult Get()
         {
             var users = _userService.GetAll();

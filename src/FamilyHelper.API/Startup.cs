@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using System.Text;
+using FamilyHelper.API.Middlewares;
+using FamilyHelper.API.Utils;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +15,8 @@ using FamilyHelper.Service.Abstract;
 using FamilyHelper.Service.Implementation;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 
 namespace FamilyHelper.API
 {
@@ -73,6 +79,46 @@ namespace FamilyHelper.API
                 app.UseDeveloperExceptionPage();
             }
 
+            var signingKey = GetSecurityKey();
+
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = signingKey,
+
+                ValidateIssuer = true,
+                ValidIssuer = "ExampleIssuer",
+
+                ValidateAudience = true,
+                ValidAudience = "ExampleAudience",
+
+                ValidateLifetime = true,
+
+                ClockSkew = TimeSpan.Zero
+            };
+
+            app.UseCookieAuthentication(new CookieAuthenticationOptions
+            {
+                AutomaticAuthenticate = true,
+                AutomaticChallenge = true,
+                AuthenticationScheme = "Cookie",
+                CookieName = "access_token",
+                TicketDataFormat = new CustomJwtDataFormat(
+                    SecurityAlgorithms.HmacSha256,
+                    tokenValidationParameters),
+                LoginPath = "/api/account/login"
+            });
+
+            var options = new TokenProviderOptions
+            {
+                Audience = "ExampleAudience",
+                Issuer = "ExampleIssuer",
+                Expiration = DateTime.Now.TimeOfDay.Add(TimeSpan.FromHours(1)),
+                SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256)
+            };
+
+            app.UseMiddleware<TokenProviderMiddleware>(Options.Create(options));
+
             app.UseIdentity();
 
             app.UseCors("CorsPolicy");
@@ -88,6 +134,13 @@ namespace FamilyHelper.API
             {
                 await context.Response.WriteAsync("Hello World!");
             });
+        }
+
+        // todo: Get Security Key from config file
+        private SecurityKey GetSecurityKey()
+        {
+            string secretKey = "mysupersecret_secretkey!123";
+            return new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
         }
     }
 }

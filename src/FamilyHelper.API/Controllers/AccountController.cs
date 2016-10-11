@@ -72,12 +72,12 @@ namespace FamilyHelper.API.Controllers
                 {
                     return new OkResult();
                 }
-                else
-                {
-                    ModelState.AddModelError("", "Incorrect username or password");
-                }
+
+                ModelState.AddModelError("", "Incorrect username or password");
+                return new BadRequestResult();
             }
-            return new OkResult();
+
+            return new BadRequestResult();
         }
     }
 }
