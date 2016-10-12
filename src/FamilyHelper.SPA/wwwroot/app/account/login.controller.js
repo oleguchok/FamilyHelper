@@ -4,13 +4,14 @@
     angular.module('familyHelper')
         .controller('loginController', loginController);
 
-    loginController.$inject = ["$scope", "apiService"];
+    loginController.$inject = ["$scope", "apiService", "ngConstantSettings"];
     
-    function loginController($scope, apiService) {
+    function loginController($scope, apiService, ngConstantSettings) {
+        var serviceBase = ngConstantSettings.apiServiceBaseUri;
         $scope.user = {};
 
         $scope.login = function () {
-            apiService.post('http://localhost:5000/api/account/login', $scope.user, success, failure);
+            apiService.post(serviceBase + '/api/token', $scope.user, success, failure);
         }
 
         function success(result) {

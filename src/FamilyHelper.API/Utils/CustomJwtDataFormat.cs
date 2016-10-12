@@ -18,17 +18,12 @@ namespace FamilyHelper.API.Utils
             _validationParameters = validationParameters;
         }
 
-        public string Protect(AuthenticationTicket data)
-        {
-            throw new NotImplementedException();
-        }
-
         public AuthenticationTicket Unprotect(string protectedText, string purpose)
         {
             var handler = new JwtSecurityTokenHandler();
             ClaimsPrincipal principal = null;
             SecurityToken validToken = null;
-
+            
             try
             {
                 principal = handler.ValidateToken(protectedText, _validationParameters, out validToken);
@@ -60,7 +55,9 @@ namespace FamilyHelper.API.Utils
 
         public string Protect(AuthenticationTicket data, string purpose)
         {
-            throw new NotImplementedException();
+            return null;
         }
+
+        public string Protect(AuthenticationTicket data) => Protect(data, null);
     }
 }

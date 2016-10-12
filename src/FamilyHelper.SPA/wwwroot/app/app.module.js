@@ -1,5 +1,5 @@
 ﻿(function() {
     'use strict';
 
-    angular.module('familyHelper', [ 'ngRoute' ]);
+    angular.module('familyHelper', [ 'ngRoute', 'ngCookies' ]);
 })();

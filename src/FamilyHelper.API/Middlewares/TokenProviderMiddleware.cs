@@ -32,7 +32,7 @@ namespace FamilyHelper.API.Middlewares
             }
 
             if (!context.Request.Method.Equals("POST")
-                //|| !context.Request.HasFormContentType
+                || !context.Request.HasFormContentType
                 )
             {
                 context.Response.StatusCode = 400;

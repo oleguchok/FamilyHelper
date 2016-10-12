@@ -13,6 +13,7 @@ using FamilyHelper.Data.Infrastructure;
 using FamilyHelper.Entities.Entities;
 using FamilyHelper.Service.Abstract;
 using FamilyHelper.Service.Implementation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -48,7 +49,43 @@ namespace FamilyHelper.API
                 opt.Password.RequireUppercase = false;
                 opt.Password.RequireLowercase = false;
                 opt.Password.RequireNonAlphanumeric = false;
-            }).AddEntityFrameworkStores<FamilyHelperContext, long>();
+            }).AddEntityFrameworkStores<FamilyHelperContext, long>()
+                .AddDefaultTokenProviders();
+
+            var signingKey = GetSecurityKey();
+
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = signingKey,
+
+                ValidateIssuer = true,
+                ValidIssuer = "ExampleIssuer",
+
+                ValidateAudience = true,
+                ValidAudience = "ExampleAudience",
+
+                ValidateLifetime = true,
+
+                ClockSkew = TimeSpan.Zero
+            };
+
+            var cookie = new CookieAuthenticationOptions
+            {
+                AutomaticAuthenticate = true,
+                AutomaticChallenge = true,
+                AuthenticationScheme = "Cookie",
+                CookieName = "access_token",
+                TicketDataFormat = new CustomJwtDataFormat(
+                    SecurityAlgorithms.HmacSha256,
+                    tokenValidationParameters),
+                LoginPath = "/api/token"
+            };
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Cookies.ApplicationCookie = cookie;
+            });
 
             // DI
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -79,6 +116,8 @@ namespace FamilyHelper.API
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors("CorsPolicy");
+
             var signingKey = GetSecurityKey();
 
             var tokenValidationParameters = new TokenValidationParameters
@@ -97,32 +136,38 @@ namespace FamilyHelper.API
                 ClockSkew = TimeSpan.Zero
             };
 
-            app.UseCookieAuthentication(new CookieAuthenticationOptions
-            {
-                AutomaticAuthenticate = true,
-                AutomaticChallenge = true,
-                AuthenticationScheme = "Cookie",
-                CookieName = "access_token",
-                TicketDataFormat = new CustomJwtDataFormat(
-                    SecurityAlgorithms.HmacSha256,
-                    tokenValidationParameters),
-                LoginPath = "/api/account/login"
-            });
+            //app.UseCookieAuthentication(new CookieAuthenticationOptions
+            //{
+            //    AutomaticAuthenticate = true,
+            //    AutomaticChallenge = true,
+            //    AuthenticationScheme = "Cookie",
+            //    CookieName = "access_token",
+            //    TicketDataFormat = new CustomJwtDataFormat(
+            //        SecurityAlgorithms.HmacSha256,
+            //        tokenValidationParameters),
+            //    LoginPath = "/api/account/login"
+            //});
 
             var options = new TokenProviderOptions
             {
                 Audience = "ExampleAudience",
                 Issuer = "ExampleIssuer",
-                Expiration = DateTime.Now.TimeOfDay.Add(TimeSpan.FromHours(1)),
+                Expiration = TimeSpan.FromHours(1),
                 SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256)
             };
 
-            app.UseMiddleware<TokenProviderMiddleware>(Options.Create(options));
+            //app.UseJwtBearerAuthentication(new JwtBearerOptions
+            //{
+            //    AutomaticAuthenticate = true,
+            //    AutomaticChallenge = true,
+            //    TokenValidationParameters = tokenValidationParameters,
+            //    AuthenticationScheme = JwtBearerDefaults.AuthenticationScheme
+            //});
 
             app.UseIdentity();
 
-            app.UseCors("CorsPolicy");
-
+            app.UseMiddleware<TokenProviderMiddleware>(Options.Create(options));
+            
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
