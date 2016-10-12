@@ -1,10 +1,11 @@
 ﻿using FamilyHelper.Entities.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using OpenIddict;
 
 namespace FamilyHelper.Data
 {
-    public class FamilyHelperContext : IdentityDbContext<User, IdentityRole<long>, long>
+    public class FamilyHelperContext : OpenIddictDbContext<User, IdentityRole<long>, long>
     {
         public DbSet<Family> Families { get; set; }
 

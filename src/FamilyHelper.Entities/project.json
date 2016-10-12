@@ -6,7 +6,8 @@
       "version": "1.0.0",
       "type": "platform"
     },
-    "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "1.0.0"
+    "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "1.0.0",
+    "OpenIddict": "1.0.0-*"
   },
 
   "frameworks": {

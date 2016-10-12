@@ -1,10 +1,10 @@
 ﻿using System;
 using FamilyHelper.Entities.Abstract;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using OpenIddict;
 
 namespace FamilyHelper.Entities.Entities
 {
-    public class User : IdentityUser<long>, IEntityBase
+    public class User : OpenIddictUser<long>, IEntityBase
     {
         public override long Id { get; set; }
         public string FirstName { get; set; }

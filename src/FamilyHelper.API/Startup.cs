@@ -1,8 +1,4 @@
-﻿using System;
-using System.Text;
-using FamilyHelper.API.Middlewares;
-using FamilyHelper.API.Utils;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -13,11 +9,8 @@ using FamilyHelper.Data.Infrastructure;
 using FamilyHelper.Entities.Entities;
 using FamilyHelper.Service.Abstract;
 using FamilyHelper.Service.Implementation;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 
 namespace FamilyHelper.API
 {
@@ -37,10 +30,10 @@ namespace FamilyHelper.API
 
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMvc();
+
             services.AddDbContext<FamilyHelperContext>(options =>
                 options.UseSqlServer(Configuration["ConnectionStrings:FamilyHelperDatabase"]));
 
@@ -49,49 +42,15 @@ namespace FamilyHelper.API
                 opt.Password.RequireUppercase = false;
                 opt.Password.RequireLowercase = false;
                 opt.Password.RequireNonAlphanumeric = false;
-            }).AddEntityFrameworkStores<FamilyHelperContext, long>()
+            })
+                .AddEntityFrameworkStores<FamilyHelperContext, long>()
                 .AddDefaultTokenProviders();
 
-            var signingKey = GetSecurityKey();
-
-            var tokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = signingKey,
-
-                ValidateIssuer = true,
-                ValidIssuer = "ExampleIssuer",
-
-                ValidateAudience = true,
-                ValidAudience = "ExampleAudience",
-
-                ValidateLifetime = true,
-
-                ClockSkew = TimeSpan.Zero
-            };
-
-            var cookie = new CookieAuthenticationOptions
-            {
-                AutomaticAuthenticate = true,
-                AutomaticChallenge = true,
-                AuthenticationScheme = "Cookie",
-                CookieName = "access_token",
-                TicketDataFormat = new CustomJwtDataFormat(
-                    SecurityAlgorithms.HmacSha256,
-                    tokenValidationParameters),
-                LoginPath = "/api/token"
-            };
-
-            services.Configure<IdentityOptions>(options =>
-            {
-                options.Cookies.ApplicationCookie = cookie;
-            });
-
-            // DI
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IFamilyService, FamilyService>();
+            services.AddOpenIddict<User, IdentityRole<long>, FamilyHelperContext, long>()
+                .EnableTokenEndpoint("/connect/token")
+                .AllowPasswordFlow()
+                .DisableHttpsRequirement()
+                .AddEphemeralSigningKey();
 
             // Setting up CORS
             services.AddCors(options =>
@@ -103,10 +62,13 @@ namespace FamilyHelper.API
                         .AllowCredentials());
             });
 
-            services.AddMvc();
+            // DI
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IFamilyService, FamilyService>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole();
@@ -117,56 +79,12 @@ namespace FamilyHelper.API
             }
 
             app.UseCors("CorsPolicy");
-
-            var signingKey = GetSecurityKey();
-
-            var tokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = signingKey,
-
-                ValidateIssuer = true,
-                ValidIssuer = "ExampleIssuer",
-
-                ValidateAudience = true,
-                ValidAudience = "ExampleAudience",
-
-                ValidateLifetime = true,
-
-                ClockSkew = TimeSpan.Zero
-            };
-
-            //app.UseCookieAuthentication(new CookieAuthenticationOptions
-            //{
-            //    AutomaticAuthenticate = true,
-            //    AutomaticChallenge = true,
-            //    AuthenticationScheme = "Cookie",
-            //    CookieName = "access_token",
-            //    TicketDataFormat = new CustomJwtDataFormat(
-            //        SecurityAlgorithms.HmacSha256,
-            //        tokenValidationParameters),
-            //    LoginPath = "/api/account/login"
-            //});
-
-            var options = new TokenProviderOptions
-            {
-                Audience = "ExampleAudience",
-                Issuer = "ExampleIssuer",
-                Expiration = TimeSpan.FromHours(1),
-                SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256)
-            };
-
-            //app.UseJwtBearerAuthentication(new JwtBearerOptions
-            //{
-            //    AutomaticAuthenticate = true,
-            //    AutomaticChallenge = true,
-            //    TokenValidationParameters = tokenValidationParameters,
-            //    AuthenticationScheme = JwtBearerDefaults.AuthenticationScheme
-            //});
-
+            
             app.UseIdentity();
 
-            app.UseMiddleware<TokenProviderMiddleware>(Options.Create(options));
+            app.UseOAuthValidation();
+
+            app.UseOpenIddict();
             
             app.UseMvc(routes =>
             {
@@ -179,13 +97,6 @@ namespace FamilyHelper.API
             {
                 await context.Response.WriteAsync("Hello World!");
             });
-        }
-
-        // todo: Get Security Key from config file
-        private SecurityKey GetSecurityKey()
-        {
-            string secretKey = "mysupersecret_secretkey!123";
-            return new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
         }
     }
 }
