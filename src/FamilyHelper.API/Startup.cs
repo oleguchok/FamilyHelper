@@ -32,7 +32,15 @@ namespace FamilyHelper.API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            // Setting up CORS
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", builder =>
+                    builder.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials());
+            });
 
             services.AddDbContext<FamilyHelperContext>(options =>
                 options.UseSqlServer(Configuration["ConnectionStrings:FamilyHelperDatabase"]));
@@ -50,17 +58,10 @@ namespace FamilyHelper.API
                 .EnableTokenEndpoint("/connect/token")
                 .AllowPasswordFlow()
                 .DisableHttpsRequirement()
+                .UseJsonWebTokens()
                 .AddEphemeralSigningKey();
 
-            // Setting up CORS
-            services.AddCors(options =>
-            {
-                options.AddPolicy("CorsPolicy", builder =>
-                    builder.AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader()
-                        .AllowCredentials());
-            });
+            services.AddMvc();
 
             // DI
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -79,24 +80,23 @@ namespace FamilyHelper.API
             }
 
             app.UseCors("CorsPolicy");
-            
-            app.UseIdentity();
 
-            app.UseOAuthValidation();
+            //app.UseIdentity();
 
             app.UseOpenIddict();
-            
-            app.UseMvc(routes =>
+
+            app.UseJwtBearerAuthentication(new JwtBearerOptions
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                AutomaticAuthenticate = true,
+                AutomaticChallenge = true,
+                RequireHttpsMetadata = false,
+                Audience = "http://localhost:58292/",
+                Authority = "http://localhost:58292/"
             });
 
-            app.Run(async (context) =>
-            {
-                await context.Response.WriteAsync("Hello World!");
-            });
+            //app.UseOAuthValidation();
+
+            app.UseMvc();
         }
     }
 }
