@@ -27,7 +27,10 @@
         };
 
         function post(url, data, success, failure) {
-            return $http.post(url, data)
+            return $http.post(url, data,
+                {
+                    headers: {'client_id':'Angular.OpenIdConnect'}
+                })
                 .then(function(result) {
                         success(result);
                     },

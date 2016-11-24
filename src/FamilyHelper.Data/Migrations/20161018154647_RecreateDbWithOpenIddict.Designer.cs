@@ -8,9 +8,10 @@ using FamilyHelper.Data;
 namespace FamilyHelper.Data.Migrations
 {
     [DbContext(typeof(FamilyHelperContext))]
-    partial class FamilyHelperContextModelSnapshot : ModelSnapshot
+    [Migration("20161018154647_RecreateDbWithOpenIddict")]
+    partial class RecreateDbWithOpenIddict
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.0-rtm-21431")
