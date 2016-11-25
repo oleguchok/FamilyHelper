@@ -103,7 +103,7 @@ namespace FamilyHelper.AuthenticationServer.Controllers
                 OpenIddictConstants.Scopes.Roles
             }.Intersect(request.GetScopes());
 
-            ticket.SetResources("http://localhost:5000/");
+            ticket.SetResources("FamilyHelper.API");
             ticket.SetScopes(scope);
 
             // Sign in the user

@@ -1,13 +1,15 @@
-﻿using FamilyHelper.Data;
+﻿using CryptoHelper;
+using FamilyHelper.Data;
 using FamilyHelper.Entities.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System.Linq;
+using OpenIddict;
 
 namespace FamilyHelper.AuthenticationServer
 {
@@ -40,14 +42,15 @@ namespace FamilyHelper.AuthenticationServer
             })
                 .AddEntityFrameworkStores<FamilyHelperContext, long>();
 
-            services.AddOpenIddict<FamilyHelperContext>()
+            services.AddOpenIddict<FamilyHelperContext, long>()
                 .AddMvcBinders()
                 .EnableTokenEndpoint("/connect/token")
-                .UseJsonWebTokens()
+                .EnableIntrospectionEndpoint("/connect/introspect")
                 .AllowPasswordFlow()
                 .DisableHttpsRequirement()
                 .AddEphemeralSigningKey();
 
+            services.AddCors();
             services.AddMvc();
         }
         
@@ -62,9 +65,55 @@ namespace FamilyHelper.AuthenticationServer
 
             app.UseIdentity();
 
+            app.UseCors(builder =>
+            {
+                builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials();
+            });
+
             app.UseOpenIddict();
 
+            app.UseOAuthValidation();
+
             app.UseMvcWithDefaultRoute();
+
+            SeedDatabase(app);
+        }
+
+        private void SeedDatabase(IApplicationBuilder app)
+        {
+            var options = app
+                .ApplicationServices
+                .GetRequiredService<DbContextOptions<FamilyHelperContext>>();
+
+            using (var context = new FamilyHelperContext(options))
+            {
+                //context.Database.EnsureDeleted();
+                //context.Database.EnsureCreated();
+
+                if (!context.Applications.Any())
+                {
+                    context.Applications.Add(new OpenIddictApplication<long>
+                    {
+                        ClientId = "FamilyHelper.OpenIdConnect",
+                        DisplayName = "Family Helper Open Id Connect",
+                        LogoutRedirectUri = "http://localhost:52334/signout-oidc",
+                        RedirectUri = "http://localhost:52334/signin-oidc",
+                        Type = OpenIddictConstants.ClientTypes.Public
+                    });
+
+                    context.Applications.Add(new OpenIddictApplication<long>
+                    {
+                        ClientId = "FamilyHelper.API",
+                        ClientSecret = Crypto.HashPassword("secret_secret_secret"),
+                        Type = OpenIddictConstants.ClientTypes.Confidential
+                    });
+                }
+
+                context.SaveChanges();
+            }
         }
     }
 }

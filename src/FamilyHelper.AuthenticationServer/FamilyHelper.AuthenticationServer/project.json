@@ -16,7 +16,8 @@
     "OpenIddict.Mvc": "1.0.0-*",
     "Microsoft.AspNetCore.MVC": "1.0.0",
     "FamilyHelper.Entities": "1.0.0-*",
-    "Microsoft.EntityFrameworkCore": "1.0.0"
+    "Microsoft.EntityFrameworkCore": "1.0.0",
+    "AspNet.Security.OAuth.Introspection": "1.0.0-alpha2-final"
   },
 
   "tools": {

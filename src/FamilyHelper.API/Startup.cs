@@ -1,5 +1,4 @@
-﻿using FamilyHelper.API.Tools;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -66,13 +65,19 @@ namespace FamilyHelper.API
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseIdentity();
             app.UseCors("CorsPolicy");
 
-            app.UseIdentity();
+            app.UseOAuthIntrospection(options => {
+                options.AutomaticAuthenticate = true;
+                options.AutomaticChallenge = true;
+                options.Authority = "http://localhost:54956/";
+                options.Audiences.Add("FamilyHelper.API");
+                options.ClientId = "FamilyHelper.API";
+                options.ClientSecret = "secret_secret_secret";
+            });
             
             app.UseMvc();
-
-            app.UseDbSeeder();
         }
     }
 }
