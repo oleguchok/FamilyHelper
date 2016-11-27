@@ -4,14 +4,16 @@
     angular.module('familyHelper')
         .controller('loginController', loginController);
 
-    loginController.$inject = ["$scope", "apiService", "ngConstantSettings"];
+    loginController.$inject = ["$scope", "apiService", "ngConstantSettings", "authService"];
     
-    function loginController($scope, apiService, ngConstantSettings) {
+    function loginController($scope, apiService, ngConstantSettings, authService) {
         var serviceBase = ngConstantSettings.apiServiceBaseUri;
         $scope.user = {};
+        $scope.user.grant_type = "password";
 
         $scope.login = function () {
-            apiService.post(serviceBase + '/connect/authorize', $scope.user, success, failure);
+            //apiService.post('http://localhost:54956' + '/connect/token', $scope.user, success, failure);
+            authService.login($scope.user);
         }
 
         $scope.test = function() {
