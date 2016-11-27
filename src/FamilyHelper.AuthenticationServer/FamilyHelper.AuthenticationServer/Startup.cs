@@ -67,11 +67,11 @@ namespace FamilyHelper.AuthenticationServer
 
             app.UseCors(builder =>
             {
-                builder.AllowAnyOrigin()
+            builder.AllowAnyOrigin()
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials();
-            });
+        });
 
             app.UseOpenIddict();
 
