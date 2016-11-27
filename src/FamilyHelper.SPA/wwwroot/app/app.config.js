@@ -7,20 +7,9 @@
             apiServiceBaseUri: 'http://localhost:5000/'
         })
         .config([
-            '$routeProvider', '$locationProvider', '$httpProvider',
-            function config($routeProvider, $locationProvider, $httpProvider) {
-                $routeProvider
-                    .when("/login",
-                    {
-                        templateUrl: "/app/account/login.html"
-                    })
-                    .when("/register",
-                    {
-                        templateUrl: "/app/account/register.html"
-                    });
-
-                $locationProvider.html5Mode({ enabled: true, requireBase: false });
-
+            '$httpProvider',
+            function config($httpProvider) {
+                
                 $httpProvider.interceptors.push('authInterceptor');
 
                 //$httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
