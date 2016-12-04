@@ -3,14 +3,16 @@
 
     angular
         .module('familyHelper')
-        .constant('ngConstantSettings', {
+        .constant('ngConstantSettings',
+        {
             apiServiceBaseUri: 'http://localhost:5000/'
         })
-        .config([
-            '$httpProvider',
-            function config($httpProvider) {
-                
-                $httpProvider.interceptors.push('authInterceptor');
+        .config(config)
+        .run(run);
+        
+    function config($httpProvider) {
+
+        $httpProvider.interceptors.push('authInterceptor');
 
                 //$httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
 
@@ -54,6 +56,19 @@
                 //$httpProvider.defaults.transformRequest = [function (data) {
                 //    return angular.isObject(data) && String(data) !== '[object File]' ? param(data) : data;
                 //}];
-            }
-        ]);
+    }
+
+    function run($trace, $transitions) {
+        $trace.enable('TRANSITION');
+
+        //$transitions.onStart({  }, function (trans) {
+        //    var auth = trans.injector().get('authService');
+        //    if (!auth.isAuthenticated())
+        //    {
+        //        // User isn't authenticated. Redirect to a new Target State
+        //        return trans.router.stateService.target('login');
+        //    }
+        //    return null;
+        //});
+    }
 })();

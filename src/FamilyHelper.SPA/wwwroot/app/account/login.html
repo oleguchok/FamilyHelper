@@ -1,4 +1,4 @@
-﻿<div class="row" ng-controller="loginController">
+﻿<div class="row">
     <form class="col-md-3">
         <h3>Sign in</h3>
         <div class="form-group">
@@ -11,8 +11,7 @@
         </div>
         <button class="btn btn-lg btn-primary btn-block" type="submit" ng-click="login()">Sign in</button>
         <div class="pull-right">
-            <a ng-href="/register" class="control-label">Register</a>
+            <a ui-sref="register" class="control-label">Register</a>
         </div>
-        <button ng-click="test()">GOOO</button>
     </form>
 </div>

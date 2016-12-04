@@ -4,10 +4,14 @@
     angular.module('familyHelper')
         .service('authService', authService);
 
-    authService.$inject = ['$http', 'localStorageService'];
+    authService.$inject = ['$http', '$q', 'localStorageService'];
 
-    function authService($http, localStorageService) {
+    function authService($http, $q, localStorageService) {
         var self = this;
+        
+        self.authentication = {
+            isAuth: false
+        }
 
         self.register = function (userRegister) {
             return $http.post('http://localhost:54956' + '/api/account/register', userRegister);
@@ -20,15 +24,29 @@
                 userLogin.password +
                 "&grant_type=" +
                 userLogin.grant_type;
-            return $http.post('http://localhost:54956' + '/connect/token', data,
-            {
-                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-            }).then(success);
+
+            var deferred = $q.defer();
+
+            $http.post('http://localhost:54956' + '/connect/token',
+                    data,
+                    {
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                    })
+                .success(function success(response) {
+                    localStorageService.set('authorizationData', { token: response.access_token });
+
+                    authentication.isAuth = true;
+
+                    $rootScope.isAuth = true;
+
+                    deferred.resolve(response);
+                });
+
+            return deferred.promise;
         }
 
-        function success(response) {
-            var data = response.data;
-            localStorageService.set('authorizationData', { token: data.access_token });
+        self.isAuthenticated = function() {
+            return authentication.isAuth;
         }
     }
 
